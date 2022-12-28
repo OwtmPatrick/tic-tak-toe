@@ -1,11 +1,10 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "module": "commonjs",
-        "outDir": "./dist",
-        "strict": true,
-        // "sourceMap": true,
-        "typeRoots": ["node_modules/@types"]
-    },
-    "exclude": ["dist", "node_modules"]
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "strict": true,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "exclude": ["dist", "node_modules"]
 }

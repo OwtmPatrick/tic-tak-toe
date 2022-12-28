@@ -1,43 +1,47 @@
 import * as express from "express";
 import { Server } from "socket.io";
+import users from "./store/Users";
+
+const { getUsers, addUser, removeUser } = users;
 
 const app = express();
+const PORT = 3000;
 
-const server = app.listen(3000, () => {
-  console.log("Application started on port 3000!");
+const server = app.listen(PORT, () => {
+  console.log(`Application started on port ${PORT}`);
 });
 
-const socketIo = new Server(server, {
+const io = new Server(server, {
   cors: {
-    origin: "*" // Allow any origin for testing purposes. This should be changed on production.
+    origin: "http://127.0.0.1:5173"
   }
 });
 
-socketIo.on("connection", socket => {
-  console.log("New connection created");
+io.on("connection", socket => {
+  socket.on("join", ({ name }, callback) => {
+    const { error } = addUser({ id: socket.id, name });
 
-  // Get the auth token provided on handshake.
-  const token = socket.handshake.auth.token;
-  console.log("Auth token", token);
+    if (error) return callback(error);
 
-  try {
-    // Verify the token here and get user info from JWT token.
-  } catch (error) {
-    socket.disconnect(true);
-  }
+    io.emit("roomData", {
+      users: getUsers()
+    });
+    callback();
+  });
 
-  // A client is disconnected.
+  socket.on("getUsers", () => {
+    io.emit("roomData", {
+      users: getUsers()
+    });
+  });
+
   socket.on("disconnect", () => {
-    console.log("A user disconnected"); 
-  });
+    const user = removeUser(socket.id);
 
-  // Read message recieved from client.
-  socket.on("message_from_client", data => {
-    console.log("message_from_client: ", data);
-  });
+    console.log(user);
 
-  // Send a message to the connected client 5 seconds after the connection is created.
-  setTimeout(() => {
-    socket.emit("message_from_server", `Message: ${Math.random()}`);
-  }, 5_000);
+    io.emit("roomData", {
+      users: getUsers()
+    });
+  });
 });

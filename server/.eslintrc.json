@@ -5,7 +5,7 @@
     {
       "files": ["*.ts"],
       "parserOptions": {
-        "project": ["tsconfig.json"],
+        "project": "server/tsconfig.json",
         "createDefaultProgram": true
       },
       "extends": ["plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],

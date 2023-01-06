@@ -6,25 +6,28 @@ const getUsers = () => {
   return users;
 };
 
-const addUser = ({ id, name }: User) => {
+const checkUserName = ({ name }: Partial<User>) => {
   const existingUser = users.find(user => user.name === name);
 
   if (existingUser) {
     return { error: "This name already exist" };
   }
-
-  const newUser = { id, name };
-
-  users.push(newUser);
-  return { newUser };
 };
 
-const removeUser = (id: string) => {
-  const index = users.findIndex(user => user.id === id);
+const addUser = ({ name, socketId }: User) => {
+  const newUser = { name, socketId };
+
+  users.push(newUser);
+};
+
+const removeUser = (socketId: string) => {
+  const index = users.findIndex(user => user.socketId === socketId);
 
   if (index !== -1) {
     return users.splice(index, 1)[0];
   }
+
+  console.log(users);
 };
 
-export default { getUsers, addUser, removeUser };
+export default { getUsers, checkUserName, addUser, removeUser };

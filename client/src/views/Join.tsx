@@ -3,7 +3,7 @@ import { FormControl, FormLabel, Input, FormErrorMessage, Button } from "@chakra
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
 
-const Join = () => {
+const Join: React.FC = () => {
   const [name, setName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const socket = useContext(SocketContext);
@@ -12,13 +12,16 @@ const Join = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void =>
     setName(e.target.value);
+
   const onJoin = () => {
-    socket.emit("join", { name }, (e: string) => {
+    socket.emit("checkUserName", { name }, (e: string) => {
       if (e) {
+        console.log(e);
         setError(e);
         return;
       }
 
+      localStorage.setItem("userName", name!);
       navigate("/main");
     });
   };

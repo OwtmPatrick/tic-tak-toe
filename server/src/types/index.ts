@@ -1,4 +1,5 @@
 export type User = {
-  id: string;
+//   id: string;
   name: string;
+  socketId: string;
 };

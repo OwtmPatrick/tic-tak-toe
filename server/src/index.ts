@@ -2,7 +2,7 @@ import * as express from "express";
 import { Server } from "socket.io";
 import users from "./store/Users";
 
-const { getUsers, addUser, removeUser } = users;
+const { getUsers, checkUserName, addUser, removeUser } = users;
 
 const app = express();
 const PORT = 3000;
@@ -18,15 +18,30 @@ const io = new Server(server, {
 });
 
 io.on("connection", socket => {
-  socket.on("join", ({ name }, callback) => {
-    const { error } = addUser({ id: socket.id, name });
+  socket.on("checkUserName", ({ name }, callback) => {
+    const res = checkUserName({ name });
 
-    if (error) return callback(error);
+    if (res?.error) return callback(res?.error);
+
+    callback();
+  });
+
+  socket.on("addUser", ({ name }) => {
+    addUser({ name, socketId: socket.id });
 
     io.emit("roomData", {
       users: getUsers()
     });
-    callback();
+  });
+
+  socket.on("leave", (socketId: string) => {
+    const user = removeUser(socket.id);
+
+    console.log("user disconnected:", user?.name);
+
+    io.emit("roomData", {
+      users: getUsers()
+    });
   });
 
   socket.on("getUsers", () => {
@@ -38,7 +53,9 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     const user = removeUser(socket.id);
 
-    console.log(user);
+    console.log("user disconnected:", user?.name);
+
+    console.log("users: ", getUsers());
 
     io.emit("roomData", {
       users: getUsers()

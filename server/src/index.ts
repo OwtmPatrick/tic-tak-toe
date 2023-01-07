@@ -26,7 +26,11 @@ io.on("connection", socket => {
     callback();
   });
 
-  socket.on("addUser", ({ name }) => {
+  socket.on("addUser", ({ name }, callback) => {
+    const res = checkUserName({ name });
+
+    if (res?.error) return callback(res?.error);
+
     addUser({ name, socketId: socket.id });
 
     io.emit("roomData", {
@@ -34,7 +38,7 @@ io.on("connection", socket => {
     });
   });
 
-  socket.on("leave", (socketId: string) => {
+  socket.on("leave", () => {
     const user = removeUser(socket.id);
 
     console.log("user disconnected:", user?.name);
@@ -53,7 +57,7 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     const user = removeUser(socket.id);
 
-    console.log("user disconnected:", user?.name);
+    console.log("user left:", user?.name);
 
     console.log("users: ", getUsers());
 

@@ -10,24 +10,29 @@ const Main: React.FC = () => {
   const navigate = useNavigate();
   const userName = localStorage.getItem("userName");
 
+  const leave = () => {
+    localStorage.removeItem("userName");
+    navigate("/join");
+  };
+
   useEffect(() => {
     socket.on("roomData", (data: { users: User[] }) => {
-      console.log("get users");
       setUsers(data.users);
     });
 
     if (userName) {
-      socket.emit("addUser", { name: userName });
+      socket.emit("addUser", { name: userName }, (e: string) => {
+        if (e === "This name already exist") {
+          leave();
+        }
+      });
     } else {
-      localStorage.removeItem("userName");
-      navigate("/join");
+      leave();
     }
   }, []);
 
   const onLeave = (): void => {
-    localStorage.removeItem("userName");
-    navigate("/join");
-
+    leave();
     socket.emit("leave", socket.id);
   };
 

@@ -2,6 +2,7 @@ import * as express from "express";
 import { Server } from "socket.io";
 import users from "./store/Users";
 import games from "./store/Games";
+import { Events, Actions } from "./constants/socket";
 
 import { Position } from "./entities/Game";
 
@@ -21,8 +22,8 @@ const io = new Server(server, {
   }
 });
 
-io.on("connection", socket => {
-  socket.on("checkUserName", ({ name }, callback) => {
+io.on(Events.CONNECTION, socket => {
+  socket.on(Events.CHECK_USER_NAME, ({ name }, callback) => {
     const res = checkUserName({ name });
 
     if (res?.error) return callback(res?.error);
@@ -30,48 +31,48 @@ io.on("connection", socket => {
     callback();
   });
 
-  socket.on("addUser", ({ name }, callback) => {
+  socket.on(Events.ADD_USER, ({ name }, callback) => {
     const res = checkUserName({ name });
 
     if (res?.error) return callback(res?.error);
 
     addUser({ name, socketId: socket.id });
 
-    io.emit("roomData", {
+    io.emit(Actions.GET_USERS, {
       users: getUsers()
     });
   });
 
-  socket.on("leave", () => {
+  socket.on(Events.LEAVE, () => {
     const user = removeUser(socket.id);
 
     console.log("user disconnected:", user?.name);
 
-    io.emit("roomData", {
+    io.emit(Actions.GET_USERS, {
       users: getUsers()
     });
   });
 
-  socket.on("disconnect", () => {
+  socket.on(Events.DISCONNECT, () => {
     const user = removeUser(socket.id);
 
     console.log("user left:", user?.name);
 
-    io.emit("roomData", {
+    io.emit(Actions.GET_USERS, {
       users: getUsers()
     });
   });
 
-  socket.on("getGames", () => {
-    io.emit("roomDataGames", {
+  socket.on(Events.GET_ALL_GAMES, () => {
+    io.emit(Actions.GET_GAMES, {
       games: getGames()
     });
   });
 
-  socket.on("createGame", (player: { name: string; position: Position }) => {
+  socket.on(Events.CREATE_GAME, (player: { name: string; position: Position }) => {
     createGame(player);
 
-    io.emit("roomDataGames", {
+    io.emit(Actions.GET_GAMES, {
       games: getGames()
     });
   });

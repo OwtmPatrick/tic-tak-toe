@@ -4,14 +4,15 @@ import { Box } from "@chakra-ui/react";
 import { Game } from "../../types";
 import { SocketContext } from "../../context/SocketContext";
 import CreateGame from "../CreateGame/CreateGame";
+import { Actions, Events } from "../../constants/socket";
 
 const Games: React.FC<{}> = () => {
   const [games, setGames] = useState<Game[]>([]);
   const socket = useContext(SocketContext);
 
   useEffect(() => {
-    socket.emit("getGames");
-    socket.on("roomDataGames", ({ games: data }: { games: Game[] }) => {
+    socket.emit(Actions.GET_ALL_GAMES);
+    socket.on(Events.GET_GAMES, ({ games: data }: { games: Game[] }) => {
       setGames(data);
     });
   }, []);

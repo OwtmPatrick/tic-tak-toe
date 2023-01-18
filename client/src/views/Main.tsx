@@ -5,6 +5,7 @@ import { User } from "../types";
 import { useNavigate } from "react-router-dom";
 import Users from "../components/Users/Users";
 import Games from "../components/Games/Games";
+import { Events, Actions } from "../constants/socket";
 
 const Main: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -18,12 +19,12 @@ const Main: React.FC = () => {
   };
 
   useEffect(() => {
-    socket.on("roomData", (data: { users: User[] }) => {
+    socket.on(Events.GET_USERS, (data: { users: User[] }) => {
       setUsers(data.users);
     });
 
     if (userName) {
-      socket.emit("addUser", { name: userName }, (e: string) => {
+      socket.emit(Actions.ADD_USER, { name: userName }, (e: string) => {
         if (e === "This name already exist") {
           leave();
         }
@@ -35,7 +36,7 @@ const Main: React.FC = () => {
 
   const onLeave = (): void => {
     leave();
-    socket.emit("leave", socket.id);
+    socket.emit(Actions.LEAVE, socket.id);
   };
 
   return (

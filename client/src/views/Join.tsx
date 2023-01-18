@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { FormControl, FormLabel, Input, FormErrorMessage, Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
+import { Actions } from "../constants/socket";
 
 const Join: React.FC = () => {
   const [name, setName] = useState<string | null>(null);
@@ -14,9 +15,8 @@ const Join: React.FC = () => {
     setName(e.target.value);
 
   const onJoin = () => {
-    socket.emit("checkUserName", { name }, (e: string) => {
+    socket.emit(Actions.CHECK_USER_NAME, { name }, (e: string) => {
       if (e) {
-        console.log(e);
         setError(e);
         return;
       }

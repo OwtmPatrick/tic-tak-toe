@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { Position } from "../../types";
 import { SocketContext } from "../../context/SocketContext";
+import { Actions } from "../../constants/socket";
 
 const CreateGame: React.FC<{}> = () => {
   const [position, setPosition] = useState<Position>();
@@ -29,7 +30,7 @@ const CreateGame: React.FC<{}> = () => {
         position
       };
 
-      socket.emit("createGame", player);
+      socket.emit(Actions.CREATE_GAME, player);
     } catch (e) {
       console.error(`Error during creating game ${e}`);
     }

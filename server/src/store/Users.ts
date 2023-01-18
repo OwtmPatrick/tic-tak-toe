@@ -26,8 +26,6 @@ const removeUser = (socketId: string) => {
   if (index !== -1) {
     return users.splice(index, 1)[0];
   }
-
-  console.log(users);
 };
 
 export default { getUsers, checkUserName, addUser, removeUser };

@@ -1,8 +1,12 @@
 import * as express from "express";
 import { Server } from "socket.io";
 import users from "./store/Users";
+import games from "./store/Games";
+
+import { Position } from "./entities/Game";
 
 const { getUsers, checkUserName, addUser, removeUser } = users;
+const { getGames, createGame } = games;
 
 const app = express();
 const PORT = 3000;
@@ -48,21 +52,27 @@ io.on("connection", socket => {
     });
   });
 
-  socket.on("getUsers", () => {
-    io.emit("roomData", {
-      users: getUsers()
-    });
-  });
-
   socket.on("disconnect", () => {
     const user = removeUser(socket.id);
 
     console.log("user left:", user?.name);
 
-    console.log("users: ", getUsers());
-
     io.emit("roomData", {
       users: getUsers()
+    });
+  });
+
+  socket.on("getGames", () => {
+    io.emit("roomDataGames", {
+      games: getGames()
+    });
+  });
+
+  socket.on("createGame", (player: { name: string; position: Position }) => {
+    createGame(player);
+
+    io.emit("roomDataGames", {
+      games: getGames()
     });
   });
 });

@@ -3,6 +3,8 @@ import { SocketContext } from "../context/SocketContext";
 import { Flex, Box, Button, Spacer } from "@chakra-ui/react";
 import { User } from "../types";
 import { useNavigate } from "react-router-dom";
+import Users from "../components/Users/Users";
+import Games from "../components/Games/Games";
 
 const Main: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -39,15 +41,10 @@ const Main: React.FC = () => {
   return (
     <Flex>
       <Box>
-        <Box>
-          Users:
-          <ul>
-            {users.map(user => (
-              <li key={user.socketId}>{user.name}</li>
-            ))}
-          </ul>
-        </Box>
-        <Box>Games:</Box>
+        <Flex>
+          <Users users={users} />
+          <Games />
+        </Flex>
       </Box>
       <Spacer />
       <Box>

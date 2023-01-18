@@ -6,16 +6,18 @@ import { useNavigate } from "react-router-dom";
 import Users from "../components/Users/Users";
 import Games from "../components/Games/Games";
 import { Events, Actions } from "../constants/socket";
+import { Navigation } from "../constants/navigation";
+import { LocalStorage } from "../constants/localStorage";
 
 const Main: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
-  const userName = localStorage.getItem("userName");
+  const userName = localStorage.getItem(LocalStorage.USERNAME_KEY);
 
   const leave = () => {
-    localStorage.removeItem("userName");
-    navigate("/join");
+    localStorage.removeItem(LocalStorage.USERNAME_KEY);
+    navigate(Navigation.JOIN);
   };
 
   useEffect(() => {

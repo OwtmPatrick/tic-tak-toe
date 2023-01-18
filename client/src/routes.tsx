@@ -1,5 +1,6 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import { Navigation } from "./constants/navigation";
 
 import Main from "./views/Main";
 import Join from "./views/Join";
@@ -7,14 +8,14 @@ import Join from "./views/Join";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/join" />
+    element: <Navigate to={Navigation.JOIN} />
   },
   {
-    path: "/join",
+    path: Navigation.JOIN,
     element: <Join />
   },
   {
-    path: "/main",
+    path: Navigation.MAIN,
     element: <Main />
   }
 ]);

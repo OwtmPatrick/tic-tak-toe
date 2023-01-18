@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 import users from "./store/Users";
 import games from "./store/Games";
 import { Events, Actions } from "./constants/socket";
+import { CLIENT_URL } from "./constants/url";
 
 import { Position } from "./entities/Game";
 
@@ -18,7 +19,7 @@ const server = app.listen(PORT, () => {
 
 const io = new Server(server, {
   cors: {
-    origin: "http://127.0.0.1:5173"
+    origin: CLIENT_URL
   }
 });
 

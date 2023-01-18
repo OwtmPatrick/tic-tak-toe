@@ -3,6 +3,8 @@ import { FormControl, FormLabel, Input, FormErrorMessage, Button } from "@chakra
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
 import { Actions } from "../constants/socket";
+import { Navigation } from "../constants/navigation";
+import { LocalStorage } from "../constants/localStorage";
 
 const Join: React.FC = () => {
   const [name, setName] = useState<string | null>(null);
@@ -21,8 +23,8 @@ const Join: React.FC = () => {
         return;
       }
 
-      localStorage.setItem("userName", name!);
-      navigate("/main");
+      localStorage.setItem(LocalStorage.USERNAME_KEY, name!);
+      navigate(Navigation.MAIN);
     });
   };
 
